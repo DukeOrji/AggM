@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import copy
 from collections import Counter
-from torchvision.models import mobilenet_v3_small, MobileNet_V3_Small_Weights
+from model import MobileNetV3
 from statistics import mean
 from config import device
 from user import norm
@@ -12,12 +12,10 @@ from user import norm
 class Server:
     def __init__(self):
         
-        self.global_model = mobilenet_v3_small(weights=MobileNet_V3_Small_Weights.DEFAULT)
+        self.global_model = MobileNetV3()
         self.global_model = self.global_model.to(device)
-        self.global_model.classifier[-1] = nn.Linear(self.global_model.classifier[-1].in_features, 10).to(device) #align classifier with cifar classes
         self.loss_fn = nn.CrossEntropyLoss()
-        print(self.global_model.classifier)
-        self.client_distances = {}
+        
 
         
     def broadcast_weight(self):

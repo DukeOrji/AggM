@@ -18,7 +18,7 @@ def load_cifar(num_clients):
 
     small_dataset = Subset(
         cifar_train,
-        range(30000)
+        range(50000)
     )
 
     ud = len(small_dataset)//num_clients

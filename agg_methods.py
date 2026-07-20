@@ -4,7 +4,7 @@ import copy
 from statistics import mean
  
     
-    
+  
     
 class Aggregation(Server):
     
@@ -28,10 +28,7 @@ class Aggregation(Server):
         self.global_model.load_state_dict(median_weights)
                 
 
-    def FedProx(self, client_weights):
-        pass
-
-    def Krum(self, client_weights, num_attackers):
+    def Krum(self, client_weights, num_attackers=0):
         num_clients = len(client_weights)
         m = num_clients - num_attackers - 2
         scores = []

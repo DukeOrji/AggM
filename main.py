@@ -1,29 +1,25 @@
 #main.py
 from ds import load_cifar
-import torch
+
 from agg_methods import Aggregation
 from user import User
 from config import device, SAVE
-import random
+
+import pandas as pd
 import os
 
 
-
-num_clients = 20
+results = []
+num_clients = 50
 user_dataloader, test_loader = load_cifar(num_clients)
-
-
 
 
 users = [User(i, user_dataloader[i]) for i in range(num_clients)]
 
-
 server = Aggregation()
 
-results = []
 
-
-rng_num = 25
+rng_num = 50
 print(next(server.global_model.parameters()).device) #print gpu or cpu
 for epoch in range(rng_num):
     print(f"\nRound: {epoch+1}")
@@ -42,9 +38,15 @@ for epoch in range(rng_num):
         for user in users
     ]
 
-    server.Krum(user_weights)
+    server.FedMed(user_weights)
     global_loss, global_acc = server.evaluate(test_loader)
     print(f"\n Cloud Loss: {global_loss}  |  Cloud Acc: {global_acc}")
+
+    results.append({
+        "Round": epoch + 1,
+        "Global Loss": global_loss,
+        "Global Accuracy": global_acc
+    })
 
 
     
@@ -56,9 +58,10 @@ for epoch in range(rng_num):
 
 if SAVE:
 
-    attack = ""
-    defense = ""
-    save_dir = f"feedback/{defense}/{attack}"
+    # attack = ""
+    # defense = ""
+    # save_dir = f"feedback/{defense}/{attack}"
+    save_dir = "feedback/FedMedian"
 
     os.makedirs(save_dir, exist_ok=True)
 
@@ -67,6 +70,4 @@ if SAVE:
         f"{save_dir}/results.csv",
         index=False
     )   
-    
-
 
